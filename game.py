@@ -5,8 +5,8 @@ import os
 from PIL import Image, ImageTk
 
 # Chemins vers les répertoires d'images
-CAR_DIR = "data/car/"
-NOT_CAR_DIR = "data/not_car/"
+CAR_DIR = "data/valid/car/"
+NOT_CAR_DIR = "data/valid/not_car/"
 
 # Configuration des probabilités
 CAR_PROB = 0.4
@@ -80,18 +80,32 @@ class ImageGridApp:
         for i in range(self.grid_size):
             for j in range(self.grid_size):
                 img_path = self.images[i * self.grid_size + j]
-                img = Image.open(img_path).resize((self.cell_width, self.cell_height))  # Augmenter la taille des images
-                img_tk = ImageTk.PhotoImage(img)
+                img = Image.open(img_path)
                 
+                # Crée un arrière-plan blanc pour centrer l'image
+                img = img.convert("RGBA")  # Assure un canal alpha pour l'arrière-plan transparent, si nécessaire
+                bg = Image.new("RGBA", (self.cell_width, self.cell_height), (255, 255, 255, 255))
+                
+                # Redimensionne l'image pour qu'elle tienne dans la cellule sans déformation
+                img.thumbnail((self.cell_width, self.cell_height))
+                
+                # Calcule la position pour centrer l'image dans la cellule
+                x_offset = (self.cell_width - img.size[0]) // 2
+                y_offset = (self.cell_height - img.size[1]) // 2
+                bg.paste(img, (x_offset, y_offset), mask=img if img.mode == "RGBA" else None)
+                
+                # Convertit l'image en PhotoImage pour Tkinter
+                img_tk = ImageTk.PhotoImage(bg)
+                
+                # Met à jour le widget
                 label = self.image_widgets[i][j]
-                label.config(image=img_tk, text="", width=150, height=150)
+                label.config(image=img_tk, text="")
                 
                 # Empêche la suppression de l'objet PhotoImage
                 label.photo = img_tk
                 
                 # Réinitialiser la bordure à la couleur par défaut (ici, noire ou aucune couleur)
                 label.config(borderwidth=2, relief="solid", highlightbackground="black", highlightcolor="black", highlightthickness=0)
-
 
     def start_ia(self):
         """Utilise l'IA pour prédire les images et change la couleur des bordures."""
