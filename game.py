@@ -36,8 +36,8 @@ class ImageGridApp:
         self.grid_frame.pack()
         
         # Modifier les dimensions des cellules de la grille et de l'image
-        self.cell_width = 500 # Largeur de chaque cellule (x 5 par rapport à avant)
-        self.cell_height = 500  # Hauteur de chaque cellule (x 5 par rapport à avant)
+        self.cell_width = 150 # Largeur de chaque cellule (x 5 par rapport à avant)
+        self.cell_height = 150  # Hauteur de chaque cellule (x 5 par rapport à avant)
         
         # Créer une grille de 3x3
         for i in range(self.grid_size):
@@ -90,8 +90,8 @@ class ImageGridApp:
                 img.thumbnail((self.cell_width, self.cell_height))
                 
                 # Calcule la position pour centrer l'image dans la cellule
-                x_offset = (self.cell_width - img.size[0]) // 2
-                y_offset = (self.cell_height - img.size[1]) // 2
+                x_offset = (self.cell_width - img.size[0]) // 4
+                y_offset = (self.cell_height - img.size[1]) // 4
                 bg.paste(img, (x_offset, y_offset), mask=img if img.mode == "RGBA" else None)
                 
                 # Convertit l'image en PhotoImage pour Tkinter
