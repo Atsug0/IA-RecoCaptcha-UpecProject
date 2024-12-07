@@ -3,6 +3,7 @@ from tkinter import PhotoImage
 import random
 import os
 from PIL import Image, ImageTk
+from ia_car import predict_car
 
 # Chemins vers les répertoires d'images
 CAR_DIR = "data/valid/car/"
@@ -13,12 +14,15 @@ CAR_PROB = 0.4
 NOT_CAR_PROB = 0.6
 
 # Fonction de l'IA simulée (remplacez-la par votre fonction IA réelle)
-def mock_ia(image_path):
+def get_ia_response(image_path):
     """
-    Simule une IA qui prédit si une image est une voiture.
-    Remplacez cette fonction par votre propre modèle IA.
+    Appelle le modèle IA pour prédire si l'image contient une voiture.
+    Args:
+        image_path (str): Chemin de l'image à analyser.
+    Returns:
+        bool: True si une voiture est détectée, False sinon.
     """
-    return "car" in image_path
+    return predict_car(image_path)
 
 # Classe principale de l'application
 class ImageGridApp:
@@ -112,7 +116,7 @@ class ImageGridApp:
         for i in range(self.grid_size):
             for j in range(self.grid_size):
                 img_path = self.images[i * self.grid_size + j]
-                result = mock_ia(img_path)
+                result = get_ia_response(img_path)
                 # Change la couleur de bordure selon le résultat
                 label = self.image_widgets[i][j]
                 if result:
