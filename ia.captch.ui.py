@@ -10,6 +10,7 @@ import wx.lib.agw.pygauge as pg
 # Load the model
 model = load_model("cnn_multipleReconnection_model.h5")
 categories = ['car', 'cats', 'dogs', 'flowers', 'none']
+categories_combo = ['car', 'cats', 'dogs', 'flowers',]
 
 # Image directory paths
 CATEGORIES_DIR = {
@@ -56,7 +57,7 @@ class ImageGridPanel(wx.Panel):
         main_sizer = wx.BoxSizer(wx.VERTICAL)
 
         # Category selection dropdown
-        category_box = wx.ComboBox(self, choices=categories, value=self.selected_category)
+        category_box = wx.ComboBox(self, choices=categories_combo, value=self.selected_category)
         category_box.Bind(wx.EVT_COMBOBOX, self.on_category_change)
         main_sizer.Add(category_box, 0, wx.ALL, 10)
 

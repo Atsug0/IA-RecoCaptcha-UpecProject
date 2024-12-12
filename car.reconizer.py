@@ -6,11 +6,14 @@ import numpy as np
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.models import load_model
 import wx.lib.agw.pygauge as pg
-from ia_car import predict_car
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+import numpy as np
+import cv2
 
-# Load the model
-model = load_model("cnn_multipleReconnection_model.h5")
-categories = ['car', 'not_car']
+# Charger votre modèle IA
+model = load_model('car_not_car_model.h5')
+
 
 # Image directory paths
 CAR_DIR = "data/valid/car/"
@@ -21,6 +24,27 @@ CAR_PROB = 0.4  # Probability for car category
 NOT_CAR_PROB = 0.6  # Probability for not_car category
 
 
+def predict_car(img_path):
+    """
+    Prédit si une image contient une voiture ou non.
+    Args:
+        image_path (str): Chemin de l'image à analyser.
+    Returns:
+        bool: True si une voiture est détectée, False sinon.
+    """
+    img = cv2.imread(img_path)
+    img_resized = cv2.resize(img, (100, 100))
+    img_normalized = img_resized / 255.0  # Normalisation
+    img_input = np.reshape(img_normalized, [1, 100, 100, 3])  # Ajouter la dimension batch
+
+    # Prédire avec le modèle
+    predic = model.predict(img_input)
+    if 1 - predic[0][0] < 0.7:
+        return False
+    else :
+        print(1 - predic[0][0])
+        return True
+    
 # Function for IA prediction
 def get_ia_response(image_path):
     """ 
@@ -127,10 +151,7 @@ class ImageGridPanel(wx.Panel):
             else:
                 # Add a red border or other visual indicator
                 image_control.SetBackgroundColour(wx.Colour(255, 0, 0, 50))  # Semi-transparent red
-
-            # Add prediction text as a tooltip
-            image_control.SetToolTip(f"Prediction: {'car' if result else 'not_car'}")
-
+                
             # Update progress gauge
             self.progress_gauge.SetValue(i + 1)
 
